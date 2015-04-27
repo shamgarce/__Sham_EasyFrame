@@ -1,0 +1,189 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Te extends CI_Controller
+{
+
+	public $tDb = null;
+
+	$this->container->singleton('request', function ($c) {
+		return new \Slim\Http\Request($c['environment']);
+	});
+
+   public function singleton($key, $value)
+    {
+        $this->set($key, function ($c) use ($value) {
+            static $object;
+
+            if (null === $object) {
+                $object = $value($c);
+            }
+
+            return $object;
+        });
+    }
+
+    public function set($key, $value)
+    {
+        $this->data[$this->normalizeKey($key)] = $value;
+    }
+
+
+	function __construct()
+	{
+		parent::__construct();
+	}
+
+$this->container->singleton('view', function ($c) {
+	$viewClass = $c['settings']['view'];
+	$templatesPath = $c['settings']['templates.path'];
+	$view = ($viewClass instanceOf \Slim\View) ? $viewClass : new $viewClass;
+	$view->setTemplatesDirectory($templatesPath);
+	return $view;
+});
+
+	public function getInstance($class){
+		!($this->$class) && $this->$class = new $class();
+	}
+
+	public function index()
+	{
+
+//		//匿名函数
+//		$func = function() {
+//			$db = new Db();
+//			return $db;
+//		};
+//		$rc = $func()->getall("select * from dy_user");
+//$rc =  $this->Db()->getall("select * from dy_user");
+
+
+		$callback =
+			function ($quantity, $product) use ($tax, &$total)
+			{
+				$pricePerItem = constant(__CLASS__ . "::PRICE_" .
+					strtoupper($product));
+				$total += ($pricePerItem * $quantity) * ($tax + 1.0);
+			};
+
+
+
+		$this->tDb = function(){
+			$this->getInstance('Db');
+			return $this->Db;
+		};
+
+		$rc =  $this->tDb();
+
+print_r($rc);
+
+
+
+
+
+		//$rc = $this->db;
+//		$db = function(){
+//			$file_path = FCPATH.APPPATH.'libraries\Db.php';			//E:\www\slim-API\public_html\Mib/Te/libraries/Db.php
+//			include_once($file_path);
+//
+//			echo $file_path;
+//			//return 'db_cre';
+//		};
+
+//echo $db();
+
+
+
+		//模块加载演示
+//		$params = array('a'=>'1');
+//		$this->load->library('Myte', $params);
+//		$this->myte->run();
+
+//		$CI =& get_instance();
+//		$CI->load->helper('url');
+//		$CI->load->library('encrypt');			//http://codeigniter.org.cn/user_guide/libraries/encryption.html
+		//$CI->config->item('base_url');
+//		echo 1;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//=============================================================
+	//参数接收
+	//测试 http://192.168.1.200/Te/go/123
+	/*
+	public function go($id)
+	{
+		echo $id;
+	}
+	//测试 http://192.168.1.200/Te/doo/123/wer
+	public function doo($id=0,$num=0)
+	{
+		echo $id.'<br>'.$num;
+	}
+	//=============================================================*/
+
+/*
+ *	类加载 			http://codeigniter.org.cn/user_guide/general/creating_libraries.html
+ *  路由配置		http://codeigniter.org.cn/user_guide/general/routing.html
+	公共函数位于 	system/core/Common.php 文件中，大家可以在这里定义自己的公共函数
+	路由类			http://codeigniter.org.cn/user_guide/libraries/uri.html
+	错误处理		http://codeigniter.org.cn/user_guide/general/errors.html
+	模板引擎		http://codeigniter.org.cn/user_guide/libraries/parser.html
+ * application/config/routes.php
+ * */
+
+
+
+	//=============================================================
+	/*
+	 * Doc
+	 * Man
+	 * 这两个模块没有启用
+	 * */
+//	//正常情况下不起用这个
+//	public function _remap($method, $params = array())
+//	{
+//		echo 1;
+//	}
+	//=============================================================
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
